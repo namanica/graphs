@@ -38,7 +38,10 @@ const drawGraphNodesNonDef = () => {
 };
 
 const generateAdjacencyMatrixNonDef = () => {
+    const seed = 3319;
     const matrix = [];
+
+    Math.seedrandom(seed);
     for (let i = 0; i < nodeNumberNonDef; i++) {
         matrix[i] = [];
         for (let j = 0; j < nodeNumberNonDef; j++) {
@@ -49,6 +52,55 @@ const generateAdjacencyMatrixNonDef = () => {
     return matrix;
 }
 
+const drawGraphEdgesNonDef = (adjacencyMatrix) => {
+    contextNonDef.strokeStyle = 'white';
+    contextNonDef.lineWidth = 1;
+
+    for (let i = 0; i < nodeNumberNonDef; i++) {
+        for (let j = 0; j < nodeNumberNonDef; j++) {
+            if (adjacencyMatrix[i][j] === 1) {
+                const startX = nodePositionsNonDef[j].x;
+                const startY = nodePositionsNonDef[j].y;
+
+                const endX = nodePositionsNonDef[i].x;
+                const endY = nodePositionsNonDef[i].y;
+
+                const midX = (startX + endX) / 2;
+
+                if (i === j) {
+                    contextNonDef.beginPath();
+                    if (i < 4) {
+                        contextNonDef.arc(endX,  (endY - 40), 20, -(Math.PI/2), 3*Math.PI/2, true);
+                    } else if ((i > 4 && i < 9) || i === 10) {
+                        contextNonDef.arc(endX,  (endY + 40), 20, Math.PI/2, -(3*Math.PI/2), true);
+                    } else if (i === 9) {
+                        contextNonDef.arc((endX - 40),  endY, 20, 0, 2*Math.PI, true);
+                    } else {
+                        contextNonDef.arc((endX + 40),  endY, 20, Math.PI, -(Math.PI), true);
+                    }
+                    contextNonDef.stroke();
+                } else {
+                    contextNonDef.beginPath();
+                    if (i < 4) {
+                        contextNonDef.moveTo(startX, startY);
+                        contextNonDef.lineTo(midX, startY - 50);
+                        contextNonDef.lineTo(endX, endY);
+                    } else if ((i > 4) && (i < 9)) {
+                        contextNonDef.moveTo(startX, startY);
+                        contextNonDef.lineTo(startX + 50, startY + 50);
+                        contextNonDef.lineTo(endX, endY);
+                    } else {
+                        contextNonDef.moveTo(startX, startY);
+                        contextNonDef.lineTo(startX - 100, startY + 50);
+                        contextNonDef.lineTo(endX, endY);
+                    }
+                    contextNonDef.stroke();
+                }
+            }
+        }
+    }
+};
+
 const calculatePowersNonDef = (adjacencyMatrix) => {
     const powers = new Array(nodeNumberNonDef).fill(0);
 
@@ -58,6 +110,8 @@ const calculatePowersNonDef = (adjacencyMatrix) => {
                 powers[i] += 1;
                 if (i !== j) {
                     powers[j] += 1;
+                } else if (i === j) {
+                    powers[i] += 1;
                 }
             }
         }
@@ -93,61 +147,6 @@ const checkSimilarityNonDef = (powers) => {
     const degrees = Object.values(powers);
     const firstDeg = degrees[0];
     return degrees.every(degree => degree === firstDeg) ? firstDeg : false;
-};
-
-const drawGraphEdgesNonDef = (adjacencyMatrix) => {
-    contextNonDef.strokeStyle = 'white';
-    contextNonDef.lineWidth = 1;
-
-    for (let i = 0; i < nodeNumberNonDef; i++) {
-        for (let j = 0; j < nodeNumberNonDef; j++) {
-
-            if (adjacencyMatrix[i][j] === 1) {
-                const startX = nodePositionsNonDef[j].x;
-                const startY = nodePositionsNonDef[j].y;
-                const endX = nodePositionsNonDef[i].x;
-
-                const endY = nodePositionsNonDef[i].y;
-                const midX = (startX + endX) / 2;
-
-                if (i === j) {
-                    contextNonDef.beginPath();
-                    if (i < 4) {
-                        contextNonDef.arc(endX, (endY - 35), 20, -(Math.PI/2),
-                            3*Math.PI/2, true);
-                    } else if ((i > 4 && i < 9) || i === 10) {
-                        contextNonDef.arc(endX, (endY + 35), 20, Math.PI/2, -
-                            (3*Math.PI/2), true);
-                    } else if (i === 9) {
-                        contextNonDef.arc((endX - 35), endY, 20, 0, 2*Math.PI,
-                            true);
-                    } else {
-                        contextNonDef.arc((endX + 35), endY, 20, Math.PI, -
-                            (Math.PI), true);
-                    }
-
-                    contextNonDef.stroke();
-                } else {
-                    contextNonDef.beginPath();
-                    if (i < 4) {
-                        contextNonDef.moveTo(startX, startY);
-                        contextNonDef.lineTo(midX, startY - 50);
-                        contextNonDef.lineTo(endX, endY);
-                    } else if ((i > 4) && (i < 9)) {
-                        contextNonDef.moveTo(startX, startY);
-                        contextNonDef.lineTo(startX + 50, startY + 50);
-                        contextNonDef.lineTo(endX, endY);
-                    } else {
-                        contextNonDef.moveTo(startX, startY);
-                        contextNonDef.lineTo(startX - 100, startY + 50);
-                        contextNonDef.lineTo(endX, endY);
-                    }
-
-                    contextNonDef.stroke();
-                }
-            }
-        }
-    }
 };
 
 if (contextNonDef) {
