@@ -3,28 +3,28 @@ const contextDef = canvasDef.getContext('2d');
 
 const nodePositionsDef = [
     { x: 150, y: 150 },
-    { x: 300, y: 150 },
+    { x: 300, y: 120 },
     { x: 450, y: 150 },
-    { x: 600, y: 150 },
-    { x: 600, y: 350 },
-    { x: 600, y: 550 },
+    { x: 600, y: 120 },
+    { x: 600, y: 320 },
+    { x: 600, y: 580 },
     { x: 450, y: 550 },
-    { x: 300, y: 550 },
+    { x: 300, y: 580 },
     { x: 150, y: 550 },
-    { x: 150, y: 350 },
+    { x: 150, y: 320 },
     { x: 375, y: 350 }
 ];
 const arrowPositionsDef = [
     { x: 160, y: 125 },
-    { x: 310, y: 125 },
+    { x: 310, y: 95 },
     { x: 460, y: 125 },
-    { x: 610, y: 125 },
-    { x: 625, y: 365 },
-    { x: 585, y: 575 },
+    { x: 610, y: 95 },
+    { x: 625, y: 330 },
+    { x: 585, y: 605 },
     { x: 435, y: 575 },
-    { x: 285, y: 575 },
+    { x: 285, y: 605 },
     { x: 135, y: 575 },
-    { x: 125, y: 360 },
+    { x: 125, y: 330 },
     { x: 360, y: 375 }
 ];
 
@@ -51,11 +51,14 @@ const drawGraphNodesDef = () => {
 };
 
 const generateAdjacencyMatrixDef = () => {
+    const seed = 3319;
     const matrix = [];
-    for (let i = 0; i < nodeNumberDef; i++) {
+
+    Math.seedrandom(seed);
+    for (let i = 0; i < nodeNumberNonDef; i++) {
         matrix[i] = [];
-        for (let j = 0; j < nodeNumberDef; j++) {
-            matrix[i][j] = Math.random() * 2 * kDef;
+        for (let j = 0; j < nodeNumberNonDef; j++) {
+            matrix[i][j] = Math.random() * 2 * kNonDef;
             matrix[i][j] = matrix[i][j] < 1 ? 0 : 1;
         }
     }
@@ -84,8 +87,6 @@ const drawGraphEdgesDef = (adjacencyMatrix) => {
                 const endX = nodePositionsDef[i].x;
                 const endY = nodePositionsDef[i].y;
 
-                // const midX = (startX + endX) / 2;
-
                 if (i === j) {
                     contextDef.beginPath();
                     if (i < 4) {
@@ -104,20 +105,9 @@ const drawGraphEdgesDef = (adjacencyMatrix) => {
                     contextDef.stroke();
                 } else {
                     contextDef.beginPath();
-                    if (i < 4) {
-                        contextDef.moveTo(startX, startY);
-                        // contextDef.lineTo(midX, startY - 50);
-                        contextDef.lineTo(endX, endY);
-                    }
-                    else if ((i > 4) && (i < 9)) {
-                        contextDef.moveTo(startX, startY);
-                        // contextDef.lineTo(startX + 50, startY + 50);
-                        contextDef.lineTo(endX, endY);
-                    } else {
-                        contextDef.moveTo(startX, startY);
-                        // contextDef.lineTo(startX - 100, startY + 50);
-                        contextDef.lineTo(endX, endY);
-                    }
+                    contextDef.moveTo(startX, startY);
+                    contextDef.lineTo(endX, endY);
+
                     let adjustedStartPoint = calculateAdjustedStartPoint(startX, startY, endX, endY, 20);
                     const angle = Math.atan2(endY - startY, endX - startX);
                     drawArrow(adjustedStartPoint.x, adjustedStartPoint.y, angle);

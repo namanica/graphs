@@ -38,7 +38,10 @@ const drawGraphNodesNonDef = () => {
 };
 
 const generateAdjacencyMatrixNonDef = () => {
+    const seed = 3319;
     const matrix = [];
+
+    Math.seedrandom(seed);
     for (let i = 0; i < nodeNumberNonDef; i++) {
         matrix[i] = [];
         for (let j = 0; j < nodeNumberNonDef; j++) {
@@ -67,13 +70,13 @@ const drawGraphEdgesNonDef = (adjacencyMatrix) => {
                 if (i === j) {
                     contextNonDef.beginPath();
                     if (i < 4) {
-                        contextNonDef.arc(endX,  (endY - 35), 20, -(Math.PI/2), 3*Math.PI/2, true);
+                        contextNonDef.arc(endX,  (endY - 40), 20, -(Math.PI/2), 3*Math.PI/2, true);
                     } else if ((i > 4 && i < 9) || i === 10) {
-                        contextNonDef.arc(endX,  (endY + 35), 20, Math.PI/2, -(3*Math.PI/2), true);
+                        contextNonDef.arc(endX,  (endY + 40), 20, Math.PI/2, -(3*Math.PI/2), true);
                     } else if (i === 9) {
-                        contextNonDef.arc((endX - 35),  endY, 20, 0, 2*Math.PI, true);
+                        contextNonDef.arc((endX - 40),  endY, 20, 0, 2*Math.PI, true);
                     } else {
-                        contextNonDef.arc((endX + 35),  endY, 20, Math.PI, -(Math.PI), true);
+                        contextNonDef.arc((endX + 40),  endY, 20, Math.PI, -(Math.PI), true);
                     }
                     contextNonDef.stroke();
                 } else {
