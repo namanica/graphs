@@ -65,26 +65,6 @@ const generateAdjacencyMatrixDef = () => {
     return matrix;
 }
 
-const multiplyMatrices = (matrix1, matrix2) => {
-    let result = [];
-    const rows1 = matrix1.length;
-    const rows2 = matrix2.length;
-    const cols1 = matrix1[0].length;
-    const cols2 = matrix2[0].length;
-
-    if (cols1 === rows2) {
-        for (let i = 0; i < rows1; i++) {
-            result[i] = [];
-            for (let j = 0; j < cols2; j++) {
-                for (let k = 0; k < cols2; k++) {
-                    result[i][j] = matrix1[i][k] * matrix2[k][j];
-                }
-            }
-        }
-    }
-    return result;
-}
-
 function calculateAdjustedStartPoint(startX, startY, endX, endY, radius) {
     const angle = Math.atan2(endY - startY, endX - startX);
 
