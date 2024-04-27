@@ -55,14 +55,34 @@ const generateAdjacencyMatrixDef = () => {
     const matrix = [];
 
     Math.seedrandom(seed);
-    for (let i = 0; i < nodeNumberNonDef; i++) {
+    for (let i = 0; i < nodeNumberDef; i++) {
         matrix[i] = [];
-        for (let j = 0; j < nodeNumberNonDef; j++) {
-            matrix[i][j] = Math.random() * 2 * kNonDef;
+        for (let j = 0; j < nodeNumberDef; j++) {
+            matrix[i][j] = Math.random() * 2 * kDef;
             matrix[i][j] = matrix[i][j] < 1 ? 0 : 1;
         }
     }
     return matrix;
+}
+
+const multiplyMatrices = (matrix1, matrix2) => {
+    let result = [];
+    const rows1 = matrix1.length;
+    const rows2 = matrix2.length;
+    const cols1 = matrix1[0].length;
+    const cols2 = matrix2[0].length;
+
+    if (cols1 === rows2) {
+        for (let i = 0; i < rows1; i++) {
+            result[i] = [];
+            for (let j = 0; j < cols2; j++) {
+                for (let k = 0; k < cols2; k++) {
+                    result[i][j] = matrix1[i][k] * matrix2[k][j];
+                }
+            }
+        }
+    }
+    return result;
 }
 
 function calculateAdjustedStartPoint(startX, startY, endX, endY, radius) {
@@ -133,7 +153,7 @@ const drawArrow = (x, y, angleInRadians) => {
 
 
 const calculatePowersDef = (adjacencyMatrix) => {
-    let degrees = {};
+    let powers = {};
 
     for (let i = 0; i < nodeNumberDef; i++) {
         let degPlus = 0;
@@ -148,15 +168,14 @@ const calculatePowersDef = (adjacencyMatrix) => {
             }
         }
 
-        degrees[i + 1] = { 'deg+': degPlus, 'deg-': degMinus };
+        powers[i + 1] = { 'deg+': degPlus, 'deg-': degMinus };
     }
 
-    return degrees;
+    return powers;
 }
 
 if (contextDef) {
     const adjacencyMatrix = generateAdjacencyMatrixDef();
-    console.log(adjacencyMatrix);
 
     const powers = calculatePowersDef(adjacencyMatrix);
     console.log("Power of each node in defined graph:", powers);

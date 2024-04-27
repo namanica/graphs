@@ -52,6 +52,26 @@ const generateAdjacencyMatrixNonDef = () => {
     return matrix;
 }
 
+const multiplyMatrices = (matrix1, matrix2) => {
+    let result = [];
+    const rows1 = matrix1.length;
+    const rows2 = matrix2.length;
+    const cols1 = matrix1[0].length;
+    const cols2 = matrix2[0].length;
+
+    if (cols1 === rows2) {
+        for (let i = 0; i < rows1; i++) {
+            result[i] = [];
+            for (let j = 0; j < cols2; j++) {
+                for (let k = 0; k < cols2; k++) {
+                    result[i][j] = matrix1[i][k] * matrix2[k][j];
+                }
+            }
+        }
+    }
+    return result;
+}
+
 const drawGraphEdgesNonDef = (adjacencyMatrix) => {
     contextNonDef.strokeStyle = 'white';
     contextNonDef.lineWidth = 1;
@@ -110,7 +130,7 @@ const calculatePowersNonDef = (adjacencyMatrix) => {
                 powers[i] += 1;
                 if (i !== j) {
                     powers[j] += 1;
-                } else if (i === j) {
+                } else {
                     powers[i] += 1;
                 }
             }
@@ -127,7 +147,12 @@ const calculatePowersNonDef = (adjacencyMatrix) => {
 
 if (contextNonDef) {
     const adjacencyMatrix = generateAdjacencyMatrixNonDef();
-    console.log(adjacencyMatrix);
+    console.log('Adjacency matrix:', adjacencyMatrix);
+
+    const adjacencyMatrixSqrt = multiplyMatrices(adjacencyMatrix, adjacencyMatrix);
+    const adjacencyMatrixCubed = multiplyMatrices(adjacencyMatrixSqrt, adjacencyMatrix);
+    console.log('Adjacency matrix squared:', adjacencyMatrixSqrt);
+    console.log('Adjacency matrix cubed:', adjacencyMatrixCubed);
 
     const powers = calculatePowersNonDef(adjacencyMatrix);
     console.log("Power of each node in non-defined graph:", powers);
