@@ -55,10 +55,10 @@ const generateAdjacencyMatrixDef = () => {
     const matrix = [];
 
     Math.seedrandom(seed);
-    for (let i = 0; i < nodeNumberNonDef; i++) {
+    for (let i = 0; i < nodeNumberDef; i++) {
         matrix[i] = [];
-        for (let j = 0; j < nodeNumberNonDef; j++) {
-            matrix[i][j] = Math.random() * 2 * kNonDef;
+        for (let j = 0; j < nodeNumberDef; j++) {
+            matrix[i][j] = Math.random() * 2 * kDef;
             matrix[i][j] = matrix[i][j] < 1 ? 0 : 1;
         }
     }
