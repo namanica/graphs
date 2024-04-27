@@ -145,6 +145,65 @@ const calculatePowersNonDef = (adjacencyMatrix) => {
     return powersObject;
 }
 
+const findPathsLength2NonDef = (adjacencyMatrix) => {
+    const paths = [];
+
+    for (let i = 0; i < nodeNumberNonDef; i++) {
+        for (let j = 0; j < nodeNumberNonDef; j++) {
+                for (let k = 0; k < nodeNumberNonDef; k++) {
+                    if (adjacencyMatrix[i][k] === 1 && adjacencyMatrix[k][j] === 1) {
+                        paths.push({ start: i + 1, middle: k + 1, end: j + 1 });
+                        paths.push({ start: j + 1, middle: k + 1, end: i + 1 });
+                    }
+                }
+        }
+    }
+    paths.sort((a, b) => a.start - b.start);
+    return paths;
+};
+
+const findPathsLength3NonDef = (adjacencyMatrix) => {
+    const paths = [];
+
+    for (let i = 0; i < nodeNumberNonDef; i++) {
+        for (let j = 0; j < nodeNumberNonDef; j++) {
+            for (let k = 0; k < nodeNumberNonDef; k++) {
+                    for (let l = 0; l < nodeNumberNonDef; l++) {
+                        if (adjacencyMatrix[i][k] === 1 && adjacencyMatrix[k][l] === 1 && adjacencyMatrix[l][j] === 1) {
+                            paths.push({ start: i + 1, middle1: k + 1, middle2: l + 1, end: j + 1 });
+                            paths.push({ start: j + 1, middle1: l + 1, middle2: k + 1, end: i + 1 });
+                    } else if (adjacencyMatrix[i][k] === 1 && adjacencyMatrix[k][j] === 1 && adjacencyMatrix[j][l] === 1) {
+                            paths.push({ start: i + 1, middle1: k + 1, middle2: j + 1, end: l + 1 });
+                            paths.push({ start: l + 1, middle1: j + 1, middle2: k + 1, end: i + 1 });
+                        } else if (adjacencyMatrix[i][l] === 1 && adjacencyMatrix[l][k] === 1 && adjacencyMatrix[k][j] === 1) {
+                            paths.push({ start: i + 1, middle1: l + 1, middle2: k + 1, end: j + 1 });
+                            paths.push({ start: j + 1, middle1: k + 1, middle2: l + 1, end: i + 1 });
+                        } else if (adjacencyMatrix[i][l] === 1 && adjacencyMatrix[l][j] === 1 && adjacencyMatrix[j][k] === 1) {
+                            paths.push({ start: i + 1, middle1: l + 1, middle2: j + 1, end: k + 1 });
+                            paths.push({ start: k + 1, middle1: j + 1, middle2: l + 1, end: i + 1 });
+                        } else if (adjacencyMatrix[i][j] === 1 && adjacencyMatrix[j][k] === 1 && adjacencyMatrix[k][l] === 1) {
+                            paths.push({ start: i + 1, middle1: j + 1, middle2: k + 1, end: l + 1 });
+                            paths.push({ start: l + 1, middle1: k + 1, middle2: j + 1, end: i + 1 });
+                        } else if (adjacencyMatrix[i][j] === 1 && adjacencyMatrix[j][l] === 1 && adjacencyMatrix[l][k] === 1) {
+                            paths.push({ start: i + 1, middle1: j + 1, middle2: l + 1, end: k + 1 });
+                            paths.push({ start: k + 1, middle1: l + 1, middle2: j + 1, end: i + 1 });
+                        }
+                }
+            }
+        }
+    }
+    const comparePaths = (a, b) => {
+        if (a.start !== b.start) {
+            return a.start - b.start;
+        } else {
+            return a.end - b.end;
+        }
+    };
+
+    paths.sort(comparePaths);
+    return paths;
+};
+
 if (contextNonDef) {
     const adjacencyMatrix = generateAdjacencyMatrixNonDef();
     console.log('Adjacency matrix:', adjacencyMatrix);
@@ -156,6 +215,12 @@ if (contextNonDef) {
 
     const powers = calculatePowersNonDef(adjacencyMatrix);
     console.log("Power of each node in non-defined graph:", powers);
+
+    const pathsLength2 = findPathsLength2NonDef(adjacencyMatrix);
+    console.log("Paths of length 2 in non-defined graph:", pathsLength2);
+
+    const pathsLength3 = findPathsLength3NonDef(adjacencyMatrix);
+    console.log("Paths of length 3 in non-defined graph:", pathsLength3);
 
     drawGraphEdgesNonDef(adjacencyMatrix);
     drawGraphNodesNonDef();

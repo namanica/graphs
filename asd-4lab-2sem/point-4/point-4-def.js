@@ -174,11 +174,53 @@ const calculatePowersDef = (adjacencyMatrix) => {
     return powers;
 }
 
+const findPathsLength2Def = (adjacencyMatrix) => {
+    const paths = [];
+
+    for (let i = 0; i < nodeNumberDef; i++) {
+        for (let j = 0; j < nodeNumberDef; j++) {
+            for (let k = 0; k < nodeNumberDef; k++) {
+                if (adjacencyMatrix[i][k] === 1 && adjacencyMatrix[k][j] === 1) {
+                    paths.push({ start: i + 1, middle: k + 1, end: j + 1 });
+                }
+            }
+        }
+    }
+    paths.sort((a, b) => a.start - b.start);
+    return paths;
+};
+
+const findPathsLength3Def = (adjacencyMatrix) => {
+    const paths = [];
+
+    for (let i = 0; i < nodeNumberDef; i++) {
+        for (let j = 0; j < nodeNumberDef; j++) {
+            for (let k = 0; k < nodeNumberDef; k++) {
+                if (adjacencyMatrix[i][k] === 1 && adjacencyMatrix[k][j] === 1) {
+                    for (let l = 0; l < nodeNumberDef; l++) {
+                        if (adjacencyMatrix[j][l] === 1 && l !== i && l !== k) {
+                            paths.push({ start: i + 1, middle1: k + 1, middle2: j + 1, end: l + 1 });
+                        }
+                    }
+                }
+            }
+        }
+    }
+    paths.sort((a, b) => a.start - b.start);
+    return paths;
+};
+
 if (contextDef) {
     const adjacencyMatrix = generateAdjacencyMatrixDef();
 
     const powers = calculatePowersDef(adjacencyMatrix);
     console.log("Power of each node in defined graph:", powers);
+
+    const pathsLength2 = findPathsLength2Def(adjacencyMatrix);
+    console.log("Paths of length 2 in defined graph:", pathsLength2);
+
+    const pathsLength3 = findPathsLength3Def(adjacencyMatrix);
+    console.log("Paths of length 3 in defined graph:", pathsLength3);
 
     drawGraphEdgesDef(adjacencyMatrix);
     drawGraphNodesDef();
