@@ -234,6 +234,34 @@ const booleanMatrix = (matrix) => {
     return matrix;
 }
 
+const transposeMatrix = (matrix) => {
+    const transposedMatrix = [];
+    for (let i = 0; i < matrix[0].length; i++) {
+        transposedMatrix[i] = [];
+        for (let j = 0; j < matrix.length; j++) {
+            transposedMatrix[i][j] = matrix[j][i];
+        }
+    }
+    return transposedMatrix;
+}
+
+function multiplyMatricesElem(matrix1, matrix2) {
+    let result = [];
+
+    if (matrix1.length !== matrix2.length || matrix1[0].length !== matrix2[0].length) {
+        console.error("Matrices must have the same size");
+        return result;
+    }
+
+    for (let i = 0; i < matrix1.length; i++) {
+        result[i] = [];
+        for (let j = 0; j < matrix1[0].length; j++) {
+            result[i][j] = matrix1[i][j] * matrix2[i][j];
+        }
+    }
+    return result;
+}
+
 if (contextNonDef) {
     const I = generateUnoMatrix(nodeNumberNonDef);
 
@@ -253,7 +281,12 @@ if (contextNonDef) {
     const sumIAA2A3 = sumMatrices(sumIAA2, A3);
     const sumIAA2A3A4 = sumMatrices(sumIAA2A3, A4);
 
-    console.log('Reachability matrix:', booleanMatrix(sumIAA2A3A4));
+    const R = booleanMatrix(sumIAA2A3A4);
+    console.log('Reachability matrix:', R);
+
+    const transposedR = transposeMatrix(R);
+    const S = multiplyMatricesElem(R, transposedR);
+    console.log('Strong connectivity matrix:', S);
 
     const powers = calculatePowersNonDef(adjacencyMatrix);
     console.log("Power of each node in non-defined graph:", powers);
