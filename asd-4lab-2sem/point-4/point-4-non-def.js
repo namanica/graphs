@@ -147,27 +147,16 @@ const findPathsLength3NonDef = (adjacencyMatrix) => {
 
     for (let i = 0; i < nodeNumberNonDef; i++) {
         for (let j = 0; j < nodeNumberNonDef; j++) {
-            for (let k = 0; k < nodeNumberNonDef; k++) {
-                    for (let l = 0; l < nodeNumberNonDef; l++) {
-                        if (adjacencyMatrix[i][k] === 1 && adjacencyMatrix[k][l] === 1 && adjacencyMatrix[l][j] === 1) {
-                            paths.push({ start: i + 1, middle1: k + 1, middle2: l + 1, end: j + 1 });
-                            paths.push({ start: j + 1, middle1: l + 1, middle2: k + 1, end: i + 1 });
-                    } else if (adjacencyMatrix[i][k] === 1 && adjacencyMatrix[k][j] === 1 && adjacencyMatrix[j][l] === 1) {
-                            paths.push({ start: i + 1, middle1: k + 1, middle2: j + 1, end: l + 1 });
-                            paths.push({ start: l + 1, middle1: j + 1, middle2: k + 1, end: i + 1 });
-                        } else if (adjacencyMatrix[i][l] === 1 && adjacencyMatrix[l][k] === 1 && adjacencyMatrix[k][j] === 1) {
-                            paths.push({ start: i + 1, middle1: l + 1, middle2: k + 1, end: j + 1 });
-                            paths.push({ start: j + 1, middle1: k + 1, middle2: l + 1, end: i + 1 });
-                        } else if (adjacencyMatrix[i][l] === 1 && adjacencyMatrix[l][j] === 1 && adjacencyMatrix[j][k] === 1) {
-                            paths.push({ start: i + 1, middle1: l + 1, middle2: j + 1, end: k + 1 });
-                            paths.push({ start: k + 1, middle1: j + 1, middle2: l + 1, end: i + 1 });
-                        } else if (adjacencyMatrix[i][j] === 1 && adjacencyMatrix[j][k] === 1 && adjacencyMatrix[k][l] === 1) {
-                            paths.push({ start: i + 1, middle1: j + 1, middle2: k + 1, end: l + 1 });
-                            paths.push({ start: l + 1, middle1: k + 1, middle2: j + 1, end: i + 1 });
-                        } else if (adjacencyMatrix[i][j] === 1 && adjacencyMatrix[j][l] === 1 && adjacencyMatrix[l][k] === 1) {
-                            paths.push({ start: i + 1, middle1: j + 1, middle2: l + 1, end: k + 1 });
-                            paths.push({ start: k + 1, middle1: l + 1, middle2: j + 1, end: i + 1 });
+            if (adjacencyMatrix[i][j] === 1) {
+                for (let k = 0; k < nodeNumberNonDef; k++) {
+                    if (adjacencyMatrix[j][k] === 1) {
+                        for (let l = 0; l < nodeNumberNonDef; l++) {
+                            if (adjacencyMatrix[k][l] === 1) {
+                                paths.push({ start: i + 1, middle1: j + 1, middle2: k + 1, end: l + 1 });
+                                paths.push({ start: l + 1, middle1: k + 1, middle2: j + 1, end: i + 1 });
+                            }
                         }
+                    }
                 }
             }
         }
@@ -184,9 +173,41 @@ const findPathsLength3NonDef = (adjacencyMatrix) => {
     return paths;
 };
 
+
+function multiplyMatrices(matrix1, matrix2) {
+    let result = [];
+
+    if (matrix1[0].length !== matrix2.length) {
+        console.error("Inappropriate matrix size");
+        return result;
+    }
+
+    for (let i = 0; i < matrix1.length; i++) {
+        result[i] = [];
+        for (let j = 0; j < matrix2[0].length; j++) {
+            result[i][j] = 0;
+        }
+    }
+
+    for (let i = 0; i < matrix1.length; i++) {
+        for (let j = 0; j < matrix2[0].length; j++) {
+            for (let k = 0; k < matrix1[0].length; k++) {
+                result[i][j] += matrix1[i][k] * matrix2[k][j];
+            }
+        }
+    }
+    return result;
+}
+
 if (contextNonDef) {
     const adjacencyMatrix = generateAdjacencyMatrixNonDef();
     console.log('Adjacency matrix:', adjacencyMatrix);
+
+    const A2 = multiplyMatrices(adjacencyMatrix, adjacencyMatrix);
+    console.log('A^2:', A2);
+
+    const A3 = multiplyMatrices(A2, adjacencyMatrix);
+    console.log('A^3:', A3);
 
     const powers = calculatePowersNonDef(adjacencyMatrix);
     console.log("Power of each node in non-defined graph:", powers);
