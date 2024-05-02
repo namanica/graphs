@@ -178,7 +178,7 @@ function multiplyMatrices(matrix1, matrix2) {
     let result = [];
 
     if (matrix1[0].length !== matrix2.length) {
-        console.error("Inappropriate matrix size");
+        console.error("Inappropriate rows and cols");
         return result;
     }
 
@@ -199,7 +199,44 @@ function multiplyMatrices(matrix1, matrix2) {
     return result;
 }
 
+const sumMatrices = (matrix1, matrix2) => {
+    const result = [];
+
+    if (matrix1.length !== matrix2.length || matrix1[0].length !== matrix2[0].length) {
+        console.error("Matrix sizes must be the same");
+        return result;
+    }
+
+    for (let i = 0; i < matrix1.length; i++) {
+        result[i] = [];
+        for (let j = 0; j < matrix1[0].length; j++) {
+            result[i][j] = matrix1[i][j] + matrix2[i][j];
+        }
+    }
+    return result;
+}
+
+const generateUnoMatrix = (matrixLength) => {
+    let matrix = [];
+    for (let i = 0; i < matrixLength; i++) {
+        matrix[i] = new Array(matrixLength).fill(0);
+        matrix[i][i] = 1;
+    }
+    return matrix;
+}
+
+const booleanMatrix = (matrix) => {
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix.length; j++) {
+            matrix[i][j] = matrix[i][j] = 0 ? 0 : 1;
+        }
+    }
+    return matrix;
+}
+
 if (contextNonDef) {
+    const I = generateUnoMatrix(nodeNumberNonDef);
+
     const adjacencyMatrix = generateAdjacencyMatrixNonDef();
     console.log('Adjacency matrix:', adjacencyMatrix);
 
@@ -208,6 +245,15 @@ if (contextNonDef) {
 
     const A3 = multiplyMatrices(A2, adjacencyMatrix);
     console.log('A^3:', A3);
+
+    const A4 = multiplyMatrices(A3, adjacencyMatrix);
+
+    const sumIA = sumMatrices(I, adjacencyMatrix);
+    const sumIAA2 = sumMatrices(sumIA, A2);
+    const sumIAA2A3 = sumMatrices(sumIAA2, A3);
+    const sumIAA2A3A4 = sumMatrices(sumIAA2A3, A4);
+
+    console.log('Reachability matrix:', booleanMatrix(sumIAA2A3A4));
 
     const powers = calculatePowersNonDef(adjacencyMatrix);
     console.log("Power of each node in non-defined graph:", powers);
