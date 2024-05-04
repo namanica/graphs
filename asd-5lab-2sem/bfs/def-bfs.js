@@ -132,8 +132,8 @@ const drawArrow = (x, y, angleInRadians) => {
     contextDef.restore();
 }
 
-let visitedNodes = [];
-let currentStep = 0;
+let visitedNodesBFS = [];
+let currentStepBFS = 0;
 
 const BFSAlgorithm = (adjacencyMatrix, startNode) => {
     const visited = new Array(nodeNumberDef).fill(false);
@@ -144,7 +144,7 @@ const BFSAlgorithm = (adjacencyMatrix, startNode) => {
 
     while (queue.length !== 0) {
         const currentNode = queue.shift();
-        visitedNodes.push(currentNode);
+        visitedNodesBFS.push(currentNode);
 
         for (let i = 0; i < nodeNumberDef; i++) {
             if (adjacencyMatrix[currentNode][i] === 1 && !visited[i]) {
@@ -156,9 +156,9 @@ const BFSAlgorithm = (adjacencyMatrix, startNode) => {
 }
 
 const drawNextStepBFS = (adjacencyMatrix) => {
-    if (currentStep < visitedNodes.length) {
-        const currentNodeIndex = visitedNodes[currentStep];
-        console.log(`BFS - current node: ${currentNodeIndex + 1}`);
+    if (currentStepBFS < visitedNodesBFS.length) {
+        const currentNodeIndex = visitedNodesBFS[currentStepBFS];
+        console.log(`Current node: ${currentNodeIndex + 1}`);
 
         for (let i = 0; i < nodeNumberDef; i++) {
             if (adjacencyMatrix[currentNodeIndex][i] === 1) {
@@ -200,13 +200,11 @@ const drawNextStepBFS = (adjacencyMatrix) => {
 
             }
         }
-        currentStep++;
+        currentStepBFS++;
     } else {
         console.log("BFS is finished");
     }
 }
-
-
 
 if (contextDef) {
     const adjacencyMatrix = generateAdjacencyMatrixDef();
