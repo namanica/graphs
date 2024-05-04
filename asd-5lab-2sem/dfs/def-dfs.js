@@ -155,7 +155,7 @@ const DFSAlgorithm = (adjacencyMatrix, startNode) => {
 const drawNextStepDFS = (adjacencyMatrix) => {
     if (currentStepDFS < visitedNodesDFS.length) {
         const currentNodeIndex = visitedNodesDFS[currentStepDFS];
-        console.log(`DFS - current node: ${currentNodeIndex + 1}`);
+        console.log(`DFS - active node: ${currentNodeIndex + 1}`);
 
         for (let i = 0; i < nodeNumberDef; i++) {
             if (adjacencyMatrix[currentNodeIndex][i] === 1) {

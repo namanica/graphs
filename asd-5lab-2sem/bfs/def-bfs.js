@@ -158,7 +158,7 @@ const BFSAlgorithm = (adjacencyMatrix, startNode) => {
 const drawNextStepBFS = (adjacencyMatrix) => {
     if (currentStepBFS < visitedNodesBFS.length) {
         const currentNodeIndex = visitedNodesBFS[currentStepBFS];
-        console.log(`Current node: ${currentNodeIndex + 1}`);
+        console.log(`BFS - active node: ${currentNodeIndex + 1}`);
 
         for (let i = 0; i < nodeNumberDef; i++) {
             if (adjacencyMatrix[currentNodeIndex][i] === 1) {
