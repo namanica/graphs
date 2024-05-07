@@ -14,106 +14,9 @@ const nodePositionsCon = [
     { x: 150, y: 320 },
     { x: 375, y: 350 }
 ];
-const arrowPositionsCon = [
-    { x: 160, y: 125 },
-    { x: 310, y: 95 },
-    { x: 460, y: 125 },
-    { x: 610, y: 95 },
-    { x: 625, y: 330 },
-    { x: 585, y: 605 },
-    { x: 435, y: 575 },
-    { x: 285, y: 605 },
-    { x: 135, y: 575 },
-    { x: 125, y: 330 },
-    { x: 360, y: 375 }
-];
+
 const nodeNumberCon = nodePositionsCon.length;
 const k = 1 - 0.005 - 9 * 0.005 - 0.27;
-
-const drawGraphNodesCon = () => {
-    contextCon.fillStyle = 'white';
-
-    nodePositionsDef.forEach((nodePositionCon, index) => {
-        contextCon.beginPath();
-        contextCon.arc(nodePositionCon.x, nodePositionCon.y, 20, 0, Math.PI * 2, true);
-        contextCon.fill();
-        contextCon.stroke();
-    });
-
-    contextCon.font = '14px Arial';
-    contextCon.textAlign = 'center';
-    contextCon.textBaseline = 'middle';
-    contextCon.fillStyle = 'black';
-    nodePositionsDef.forEach((nodePositionCon, index) => {
-        contextCon.fillText(`K ${index + 1}`, nodePositionCon.x, nodePositionCon.y);
-    });
-};
-
-function calculateAdjustedStartPoint(startX, startY, endX, endY, radius) {
-    const angle = Math.atan2(endY - startY, endX - startX);
-
-    const adjustedX = startX + (radius * Math.cos(angle));
-    const adjustedY = startY + (radius * Math.sin(angle));
-
-    return { x: adjustedX, y: adjustedY };
-}
-
-const drawGraphEdgesCon = (adjacencyMatrix) => {
-    contextCon.strokeStyle = 'white';
-    contextCon.lineWidth = 1;
-
-    for (let i = 0; i < nodeNumberCon; i++) {
-        for (let j = 0; j < nodeNumberCon; j++) {
-            if (adjacencyMatrix[i][j] === 1) {
-                const startX = nodePositionsCon[j].x;
-                const startY = nodePositionsCon[j].y;
-
-                const endX = nodePositionsCon[i].x;
-                const endY = nodePositionsCon[i].y;
-
-                if (i === j) {
-                    contextCon.beginPath();
-                    if (i < 4) {
-                        contextCon.arc(endX, (endY - 40), 20, -(Math.PI / 2), 3 * Math.PI / 2, true);
-                        drawArrowCon(arrowPositionsCon[i].x, arrowPositionsCon[i].y, -(3 * Math.PI / 13));
-                    } else if ((i > 4 && i < 9) || i === 10) {
-                        contextCon.arc(endX, (endY + 40), 20, Math.PI / 2, -(3 * Math.PI / 2), true);
-                        drawArrowCon(arrowPositionsCon[i].x, arrowPositionsCon[i].y, (3 * Math.PI / 5));
-                    } else if (i === 9) {
-                        contextCon.arc((endX - 40), endY, 20, 0, 2 * Math.PI, true);
-                        drawArrowCon(arrowPositionsCon[i].x, arrowPositionsCon[i].y, (3 * Math.PI / 5));
-                    } else {
-                        contextCon.arc((endX + 40), endY, 20, Math.PI, -(Math.PI), true);
-                        drawArrowCon(arrowPositionsCon[i].x, arrowPositionsCon[i].y, (3 * Math.PI / 11));
-                    }
-                    contextCon.stroke();
-                } else {
-                    contextCon.beginPath();
-                    contextCon.moveTo(startX, startY);
-                    contextCon.lineTo(endX, endY);
-
-                    let adjustedStartPoint = calculateAdjustedStartPoint(startX, startY, endX, endY, 20);
-                    const angle = Math.atan2(endY - startY, endX - startX);
-                    drawArrowCon(adjustedStartPoint.x, adjustedStartPoint.y, angle);
-                    contextCon.stroke();
-                }
-            }
-        }
-    }
-};
-
-const drawArrowCon = (x, y, angleInRadians) => {
-    const arrowSize = 6;
-    contextCon.save();
-    contextCon.translate(x, y);
-    contextCon.rotate(angleInRadians);
-    contextCon.moveTo(0, 0);
-    contextCon.lineTo(arrowSize, -arrowSize);
-    contextCon.lineTo(arrowSize / 2, 0);
-    contextCon.lineTo(arrowSize, arrowSize);
-    contextCon.closePath();
-    contextCon.restore();
-}
 
 const generateAdjacencyMatrixCon = () => {
     const seed = 3319;
@@ -268,6 +171,40 @@ const findSCCs = (adjacencyMatrix) => {
     return SCCs;
 }
 
+const drawCondensationGraph = (SCCs, strongConnectivityMatrix) => {
+    contextCon.fillStyle = 'white';
+
+    SCCs.forEach((scc, index) => {
+        contextCon.beginPath();
+        contextCon.arc(nodePositionsCon[index].x, nodePositionsCon[index].y, 20, 0, Math.PI * 2, true);
+        contextCon.fill();
+        contextCon.stroke();
+    });
+    contextCon.font = '14px Arial';
+    contextCon.textAlign = 'center';
+    contextCon.textBaseline = 'middle';
+    contextCon.fillStyle = 'black';
+    SCCs.forEach((scc, index) => {
+        contextCon.fillText(`K ${index + 1}`, nodePositionsCon[index].x, nodePositionsCon[index].y);
+    });
+
+    SCCs.forEach((scc, index) => {
+        scc.forEach(node => {
+            for (let i = 0; i < nodeNumberCon; i++) {
+                if (strongConnectivityMatrix[index][i] === 1 && SCCs.findIndex(scc => scc.includes(i)) !== index) {
+                    const targetIndex = SCCs.findIndex(scc => scc.includes(i));
+                    contextCon.beginPath();
+                    contextCon.moveTo(nodePositionsCon[index].x, nodePositionsCon[index].y);
+                    contextCon.lineTo(nodePositionsCon[targetIndex].x, nodePositionsCon[targetIndex].y);
+                    contextCon.strokeStyle = 'white';
+                    contextCon.lineWidth = 2;
+                    contextCon.stroke();
+                }
+            }
+        });
+    });
+}
+
 if (contextCon) {
     const I = generateUnoMatrix(nodeNumberCon);
     const adjacencyMatrix = generateAdjacencyMatrixCon();
@@ -294,9 +231,7 @@ if (contextCon) {
 
     const SCC = findSCCs(S);
     console.log('Strongly Connected Components:', SCC);
-
-    drawGraphEdgesCon(S);
-    drawGraphNodesCon();
+    drawCondensationGraph(SCC, S);
 } else {
     console.log('canvas are not supported');
 }
