@@ -206,6 +206,43 @@ const drawNextStepBFS = (adjacencyMatrix) => {
     }
 }
 
+const createTreeEdgesFromBFS = (visitedNodesBFS) => {
+    const treeEdges = [];
+    for (let i = 1; i < visitedNodesBFS.length; i++) {
+        const parent = visitedNodesBFS[i - 1];
+        const child = visitedNodesBFS[i];
+        treeEdges.push([parent, child]);
+    }
+    return treeEdges;
+};
+
+let currentTreeEdgeIndexBFS = 0;
+
+const drawNextTreeEdgeBFS = (treeEdges) => {
+    if (currentTreeEdgeIndexBFS < treeEdges.length) {
+        const [parent, child] = treeEdges[currentTreeEdgeIndexBFS];
+        const startX = nodePositionsDef[child].x;
+        const startY = nodePositionsDef[child].y;
+        const endX = nodePositionsDef[parent].x;
+        const endY = nodePositionsDef[parent].y;
+
+        contextDef.strokeStyle = 'green';
+        contextDef.lineWidth = 2;
+
+        contextDef.beginPath();
+        contextDef.moveTo(startX, startY);
+        contextDef.lineTo(endX, endY);
+
+        let adjustedStartPoint = calculateAdjustedStartPoint(startX, startY, endX, endY, 20);
+        const angle = Math.atan2(endY - startY, endX - startX);
+        drawArrow(adjustedStartPoint.x, adjustedStartPoint.y, angle);
+        contextDef.stroke();
+
+        currentTreeEdgeIndexBFS++;
+    }
+};
+
+
 if (contextDef) {
     const adjacencyMatrix = generateAdjacencyMatrixDef();
     console.log(adjacencyMatrix);
@@ -216,6 +253,8 @@ if (contextDef) {
     const nextStepButton = document.getElementById('canvas-btn');
     nextStepButton.addEventListener('click', () => {
         drawNextStepBFS(adjacencyMatrix);
+        const treeEdges = createTreeEdgesFromBFS(visitedNodesBFS);
+        drawNextTreeEdgeBFS(treeEdges);
         drawGraphNodesDef();
     });
 

@@ -203,6 +203,42 @@ const drawNextStepDFS = (adjacencyMatrix) => {
     }
 }
 
+const createTreeEdgesFromDFS = (visitedNodesDFS) => {
+    const treeEdges = [];
+    for (let i = 1; i < visitedNodesDFS.length; i++) {
+        const parent = visitedNodesDFS[i - 1];
+        const child = visitedNodesDFS[i];
+        treeEdges.push([parent, child]);
+    }
+    return treeEdges;
+};
+
+let currentTreeEdgeIndexDFS = 0;
+
+const drawNextTreeEdgeDFS = (treeEdges) => {
+    if (currentTreeEdgeIndexDFS < treeEdges.length) {
+        const [parent, child] = treeEdges[currentTreeEdgeIndexDFS];
+        const startX = nodePositionsDef[child].x;
+        const startY = nodePositionsDef[child].y;
+        const endX = nodePositionsDef[parent].x;
+        const endY = nodePositionsDef[parent].y;
+
+        contextDef.strokeStyle = 'green';
+        contextDef.lineWidth = 2;
+
+        contextDef.beginPath();
+        contextDef.moveTo(startX, startY);
+        contextDef.lineTo(endX, endY);
+
+        let adjustedStartPoint = calculateAdjustedStartPoint(startX, startY, endX, endY, 20);
+        const angle = Math.atan2(endY - startY, endX - startX);
+        drawArrow(adjustedStartPoint.x, adjustedStartPoint.y, angle);
+        contextDef.stroke();
+
+        currentTreeEdgeIndexDFS++;
+    }
+};
+
 if (contextDef) {
     const adjacencyMatrix = generateAdjacencyMatrixDef();
     console.log(adjacencyMatrix);
@@ -213,6 +249,8 @@ if (contextDef) {
     const nextStepButton = document.getElementById('canvas-btn');
     nextStepButton.addEventListener('click', () => {
         drawNextStepDFS(adjacencyMatrix);
+        const treeEdges = createTreeEdgesFromDFS(visitedNodesDFS);
+        drawNextTreeEdgeDFS(treeEdges);
         drawGraphNodesDef();
     });
 
