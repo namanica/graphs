@@ -206,12 +206,18 @@ const drawNextStepBFS = (adjacencyMatrix) => {
     }
 }
 
-const createTreeEdgesFromBFS = (visitedNodesBFS) => {
+const createTreeEdgesFromBFS = (adjacencyMatrix, visitedNodesBFS) => {
     const treeEdges = [];
-    for (let i = 1; i < visitedNodesBFS.length; i++) {
-        const parent = visitedNodesBFS[i - 1];
-        const child = visitedNodesBFS[i];
-        treeEdges.push([parent, child]);
+    const visited = new Array(adjacencyMatrix.length).fill(false);
+
+    for (let i = 0; i < visitedNodesBFS.length; i++) {
+        const currentNode = visitedNodesBFS[i];
+        for (let j = 0; j < adjacencyMatrix[currentNode].length; j++) {
+            if (adjacencyMatrix[currentNode][j] === 1 && visitedNodesBFS.includes(j) && !visited[j]) {
+                treeEdges.push([currentNode, j]);
+                visited[j] = true;
+            }
+        }
     }
     return treeEdges;
 };
@@ -239,6 +245,8 @@ const drawNextTreeEdgeBFS = (treeEdges) => {
         contextDef.stroke();
 
         currentTreeEdgeIndexBFS++;
+    } else {
+        console.log("BFS-tree is finished");
     }
 };
 
@@ -253,7 +261,11 @@ if (contextDef) {
     const nextStepButton = document.getElementById('canvas-btn');
     nextStepButton.addEventListener('click', () => {
         drawNextStepBFS(adjacencyMatrix);
-        const treeEdges = createTreeEdgesFromBFS(visitedNodesBFS);
+        drawGraphNodesDef();
+    });
+    const treeButton = document.getElementById('tree-btn');
+    treeButton.addEventListener('click', () => {
+        const treeEdges = createTreeEdgesFromBFS(adjacencyMatrix, visitedNodesBFS);
         drawNextTreeEdgeBFS(treeEdges);
         drawGraphNodesDef();
     });
