@@ -1,0 +1,20 @@
+.non-defined-graph-box {
+    border: 1px solid black;
+    margin: 30px;
+    background-color: black;
+}
+
+body {
+    display: flex;
+}
+
+.canvas-btn {
+    margin: 30px 10px;
+    width: 100px;
+    height: 40px;
+    background-color: black;
+    color: white;
+    font-size: 14px;
+    border-radius: 30px;
+    cursor: pointer;
+}
