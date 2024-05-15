@@ -163,76 +163,79 @@ const drawGraphEdgesNonDef = (adjacencyMatrix, weightsMatrix) => {
     }
 };
 
-// class Graph {
-//     constructor() {
-//         this.nodes = [];
-//         this.edges = [];
-//     }
-//
-//     getGraphNodes() {
-//         for (let i = 0; i < nodeNumberNonDef; i++) {
-//             this.nodes.push(i);
-//         }
-//         return this.nodes;
-//     }
-//
-//     getGraphEdges(adjacencyMatrix) {
-//         for (let i = 0; i < nodeNumberNonDef; i++) {
-//             for (let j = 0; j < nodeNumberNonDef; j++) {
-//                 if (adjacencyMatrix[i][j] === 1 && i !== j) {
-//                     this.edges.push([i, j]);
-//                 }
-//             }
-//         }
-//         return this.edges;
-//     }
-// };
-
-const primMST = (weightsMatrix) => {
-    const numNodes = weightsMatrix.length;
-    const includedInMST = Array(numNodes).fill(false);
-    const minWeights = Array(numNodes).fill(Infinity);
-    const parents = Array(numNodes).fill(null);
-    const mstEdges = [];
-    const mstSteps = [];
-
-    minWeights[0] = 0;
-
-    for (let count = 0; count < numNodes; count++) {
-        let minWeight = Infinity;
-        let newNode = -1;
-
-        for (let i = 0; i < numNodes; i++) {
-            if (!includedInMST[i] && minWeights[i] < minWeight) {
-                minWeight = minWeights[i];
-                newNode = i;
-            }
-        }
-
-        includedInMST[newNode] = true;
-
-        if (parents[newNode] !== null) {
-            mstEdges.push([parents[newNode] + 1, newNode + 1, minWeights[newNode]]);
-            mstSteps.push([parents[newNode], newNode]);
-        }
-
-        for (let i = 0; i < numNodes; i++) {
-            if (weightsMatrix[newNode][i] && !includedInMST[i] && weightsMatrix[newNode][i] < minWeights[i]) {
-                minWeights[i] = weightsMatrix[newNode][i];
-                parents[i] = newNode;
-            }
-        }
+class Graph {
+    constructor(weightsMatrix) {
+        this.weightsMatrix = weightsMatrix;
+        this.numNodes = weightsMatrix.length;
+        this.includedInMST = Array(this.numNodes).fill(false);
+        this.minWeights = Array(this.numNodes).fill(Infinity);
+        this.parents = Array(this.numNodes).fill(null);
+        this.mstEdges = [];
+        this.mstSteps = [];
     }
 
-    return { mstEdges, mstSteps };
-};
+    executePrim() {
+        this.minWeights[0] = 0;
+
+        for (let count = 0; count < this.numNodes; count++) {
+            let minWeight = Infinity;
+            let newNode = -1;
+
+            for (let i = 0; i < this.numNodes; i++) {
+                if (!this.includedInMST[i] && this.minWeights[i] < minWeight) {
+                    minWeight = this.minWeights[i];
+                    newNode = i;
+                }
+            }
+
+            this.includedInMST[newNode] = true;
+
+            if (this.parents[newNode] !== null) {
+                this.mstEdges.push([this.parents[newNode] + 1, newNode + 1, this.minWeights[newNode]]);
+                this.mstSteps.push([this.parents[newNode], newNode]);
+            }
+
+            for (let i = 0; i < this.numNodes; i++) {
+                if (this.weightsMatrix[newNode][i] && !this.includedInMST[i] && this.weightsMatrix[newNode][i] < this.minWeights[i]) {
+                    this.minWeights[i] = this.weightsMatrix[newNode][i];
+                    this.parents[i] = newNode;
+                }
+            }
+        }
+
+        return { mstEdges: this.mstEdges, mstSteps: this.mstSteps };
+    }
+
+    reorderSteps(arr) {
+        const reorderedArr = [];
+        const visited = new Set();
+
+        for (let i = 0; i < arr.length; i++) {
+            if (!visited.has(i)) {
+                let current = arr[i];
+                reorderedArr.push(current);
+                visited.add(i);
+
+                let nextIndex = arr.findIndex(pair => pair[0] === current[1] && !visited.has(arr.indexOf(pair)));
+                while (nextIndex !== -1) {
+                    current = arr[nextIndex];
+                    reorderedArr.push(current);
+                    visited.add(nextIndex);
+                    nextIndex = arr.findIndex(pair => pair[0] === current[1] && !visited.has(arr.indexOf(pair)));
+                }
+            }
+        }
+
+        return reorderedArr;
+    }
+}
 
 let currentTreeEdgeIndex = 0;
-
 const drawNextTreeEdge = (treeEdges, weightsMatrix) => {
     if (currentTreeEdgeIndex < treeEdges.length) {
         const [parent, child] = treeEdges[currentTreeEdgeIndex];
         console.log([parent + 1, child + 1], weightsMatrix[parent][child]);
+
         const startX = nodePositionsNonDef[child].x;
         const startY = nodePositionsNonDef[child].y;
         const endX = nodePositionsNonDef[parent].x;
@@ -244,7 +247,6 @@ const drawNextTreeEdge = (treeEdges, weightsMatrix) => {
         contextNonDef.beginPath();
         contextNonDef.moveTo(startX, startY);
         contextNonDef.lineTo(endX, endY);
-
         contextNonDef.stroke();
 
         currentTreeEdgeIndex++;
@@ -253,30 +255,6 @@ const drawNextTreeEdge = (treeEdges, weightsMatrix) => {
     }
 };
 
-function reorderArray(arr) {
-    const reorderedArr = [];
-    const visited = new Set();
-
-    for (let i = 0; i < arr.length; i++) {
-        if (!visited.has(i)) {
-            let current = arr[i];
-            reorderedArr.push(current);
-            visited.add(i);
-
-            let nextIndex = arr.findIndex(pair => pair[0] === current[1] && !visited.has(arr.indexOf(pair)));
-            while (nextIndex !== -1) {
-                current = arr[nextIndex];
-                reorderedArr.push(current);
-                visited.add(nextIndex);
-                nextIndex = arr.findIndex(pair => pair[0] === current[1] && !visited.has(arr.indexOf(pair)));
-            }
-        }
-    }
-
-    return reorderedArr;
-}
-
-
 if (contextNonDef) {
     const adjacencyMatrix = generateAdjacencyMatrixNonDef();
     console.log('Adjacency matrix:', adjacencyMatrix);
@@ -284,18 +262,18 @@ if (contextNonDef) {
     const weightsMatrix = generateWeightsMatrixNonDef(adjacencyMatrix);
     console.log('Weights matrix:', weightsMatrix);
 
-    const mstEdges = primMST(weightsMatrix).mstEdges;
-    // console.log('MST edges:', mstEdges);
+    const graph = new Graph(weightsMatrix);
 
-    const mstSteps = primMST(weightsMatrix).mstSteps;
-    // console.log('MST steps:', mstSteps);
+    const { mstEdges, mstSteps } = graph.executePrim();
+    // console.log("MST Edges:", mstEdges);
+    // console.log("MST Steps:", mstSteps);
 
-    const reorderedArr = reorderArray(mstSteps);
-    // console.log(reorderedArr);
+    const reorderedSteps = graph.reorderSteps(mstSteps);
+    // console.log("Reordered Steps:", reorderedSteps);
 
     const nextStepButton = document.getElementById('canvas-btn');
     nextStepButton.addEventListener('click', () => {
-        drawNextTreeEdge(reorderedArr, weightsMatrix);
+        drawNextTreeEdge(reorderedSteps, weightsMatrix);
         drawGraphNodesNonDef();
     });
 
